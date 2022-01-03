@@ -16,16 +16,29 @@ package osexec
 
 import (
 	"os/exec"
+	"strings"
 )
 
-// RunSimpleCommand execute system command.
-func RunSimpleCommand(name string) (string, error) {
-	cmd := exec.Command("/bin/sh", "-c", name)
+// Cmd is internal package exec.Cmd wrapper.
+type Cmd struct {
+	*exec.Cmd
+}
 
-	result, err := cmd.CombinedOutput()
-	if err != nil {
-		return string(result), err
+// AppendArgs appends args.
+func (cmd *Cmd) AppendArgs(arg ...string) {
+	if len(cmd.Args) != 2 {
+		single := cmd.Args[len(cmd.Args)-1]
+		args := strings.Split(single, " ")
+		args = append(args, arg...)
+
+		cmd.Args[len(cmd.Args)-1] = strings.Join(args, " ")
 	}
+}
 
-	return string(result), nil
+// Command initialize internal package exec.Cmd wrapper command instance.
+func Command(name string, arg ...string) *Cmd {
+	all := strings.Join(append([]string{name}, arg...), " ")
+	args := append([]string{"-c"}, all)
+
+	return &Cmd{exec.Command("/bin/sh", args...)}
 }
