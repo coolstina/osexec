@@ -26,7 +26,7 @@ type Cmd struct {
 
 // AppendArgs appends args.
 func (cmd *Cmd) AppendArgs(arg ...string) {
-	if len(cmd.Args) != 2 {
+	if len(cmd.Args) > 2 {
 		single := cmd.Args[len(cmd.Args)-1]
 		args := strings.Split(single, " ")
 		args = append(args, arg...)
