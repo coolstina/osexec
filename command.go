@@ -37,8 +37,7 @@ func (cmd *Cmd) AppendArgs(arg ...string) {
 
 // Command initialize internal package exec.Cmd wrapper command instance.
 func Command(name string, arg ...string) *Cmd {
-	all := strings.Join(append([]string{name}, arg...), " ")
-	args := append([]string{"-c"}, all)
-
-	return &Cmd{exec.Command("/bin/sh", args...)}
+	args := append([]string{name}, arg...)
+	all := strings.Join(args, " ")
+	return &Cmd{exec.Command("/bin/sh", "-c", all)}
 }
